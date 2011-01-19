@@ -11,7 +11,7 @@ class APP_Model_Ticket extends APP_Model_Application {
     function getAddEditFormStructure($p_sMode = 'create', array $p_aOptions = array()) {
     	$structure = array(
             'fields' => array(
-                    'title'            	    => array('type' => 'text', 'label' => 'Title', 'size' => 30),
+                    'title'            	    => array('type' => 'text', 'label' => 'Title', 'size' => 60),
                     'category_id'           => array('type' => 'dropdown', 'label' => 'Category', 'options' => array()),
                     'ticket_type'           => array('type' => 'dropdown', 'label' => 'Type', 'options' => array()),
             	    'severity'              => array('type' => 'dropdown', 'label' => 'Severity', 'options' => array()),
