@@ -9,10 +9,10 @@
 			   </tr>
 			    	<th>ID</th>
 				<th>Title</th>
-				<th>Priority</th>
-				<th>Assigned to</th>
+				<th>Status</th>
 				<th>Type</th>
-				<th>Target version</th>
+				<th>Severity</th>
+				<th>Assigned To</th>
 			    </tr>
 			</thead>
 
