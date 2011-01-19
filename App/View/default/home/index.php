@@ -45,33 +45,28 @@
 			<button type="submit"><span class="button green" id="create-ticket-button">Create ticket</span></button>
 			</div>
 			<?php endif; ?>
-			
+
 				<table cellpadding="0" cellpadding="0" class="data" id="ticket_list_table" style="margin-top: 30px;">
 					<thead>
 						<tr>
-							<th style="text-align: center; width: 25px;">#</th><th>State</th><th>Type</th><th>Severity</th><th>Title</th><th>Assigned to</th>
+<!--   						<th style="text-align: center; width: 25px;">#</th><th>State</th><th>Type</th><th>Severity</th><th>Title</th><th>Assigned to</th> -->
+						<th style="text-align: left;">Select a category</th>
 						</tr>
 					</thead>
 					<tbody>
-					<?php if(count($tickets) > 0): ?>
-				 		<?php foreach($tickets as $ticket):?>
+					<?php if(count($cats) > 0): ?>
+				 		<?php foreach($cats as $cat):?>
 							<tr>
-								<td class="num"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo $ticket['id']; ?></a></td>
-								<td class="ttstate"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo ucfirst($ticket['status']); ?></a></td>
-								<td><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo ucwords(str_replace('_', ' ', $ticket['ticket_type']));?></a></td>
-								<td><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo ucfirst($ticket['severity']);?></a></td>
-								<td class="issue st-new"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo ucfirst($ticket['title']);?></a></td>
-								<td><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . str_replace(' ', '-', $ticket['title']); ?>" title=""><?php echo ucwords($ticket['user_assigned_fn'] . ' ' . $ticket['user_assigned_ln']);?></a></td>
+								<td><a href="<?php echo $baseUrl; ?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $cat['title']); ?>"><?php echo $cat['title']; ?></a></td>
 							</tr>
 						<?php endforeach;?>
 					<?php else:?>
-						<tr><td colspan="8" id="no_tickets">No tickets present</td></tr>
-					<?php endif;?>					
+						<tr><td colspan="8" id="no_tickets">No categories present</td></tr>
+					<?php endif;?>
 					</tbody>
 				</table>
 			</article>
-		</div>		
-		
+		</div>
 		<div class="spacer_large"></div>
 
 <script language="javascript">
@@ -87,68 +82,4 @@ jQuery(document).ready(function($) {
 		window.location.href = baseUrl + 'ticket/create';
 	});
 });
-</script>		
-		
-<style type="text/css">
-		
-.num {
-text-align: center;
-}
-
-table {
-	width: 916px; 
-	border-spacing: 0;
-	border-collapse: separate;
-}
-
-table a { text-decoration: none; }
-table a:hover { text-decoration: underline; }
-
-tr {
-border-color: inherit;
-display: table-row;
-vertical-align: inherit;
-}
-
-tr:hover td {
-	background-color: #43474C;
-}
-
-table[cellspacing=0] {
-border-spacing: 0px 0px;
-}
-
-thead {
-border-color: inherit;
-display: table-header-group;
-vertical-align: middle;
-}
-
-table.data th {
-padding: 9px;
-text-align: left;
-}
-
-th {
-font-weight: bold;
-}
-
-td, th {
-display: table-cell;
-vertical-align: inherit;
-}
-
-
-table.data td {
-border-bottom: 1px solid #E0E0E0;
-padding: 9px;
-}
-
-.data .ttstate {
-white-space: nowrap;
-}
-
-td.issue {
-width: 40%;
-}
-		</style>
+</script>

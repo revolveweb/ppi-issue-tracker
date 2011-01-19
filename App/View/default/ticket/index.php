@@ -1,40 +1,40 @@
-<table class="list issues">
-	<thead>
-	    <tr>
+<div class="wrap" style="margin-top: 20px;">
+    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;&raquo;&nbsp;<span>Filter tickets by: <strong><?php echo $sCat; ?></strong></span>
+</div>
 
-	    	<th>ID</th>
+<div class="wrap" style="margin-top: 20px;">
+	<article class="box_1">
+		<table class="issues" id="ticket_list_table" cellspacing="0" cellpadding="0">
+			<thead>
+			   </tr>
+			    	<th>ID</th>
+				<th>Title</th>
+				<th>Priority</th>
+				<th>Assigned to</th>
+				<th>Type</th>
+				<th>Target version</th>
+			    </tr>
+			</thead>
 
-			<th>Type</th>
-
-			<th>Priority</th>
-
-	        <th>Assigned to</th>
-
-	        <th>Title</th>
-
-	        <th>Target version</th>
-		</tr>
-	</thead>
-
-	<tbody>
-		<?php if(count($tickets) > 0): ?>
-	 		<?php foreach($tickets as $ticket):?>
-				<tr class="hascontextmenu odd issue status-1 priority-2" id="issue-3204">
-					<td class="id"><?php echo $ticket['id'];?></td>
-			        <td class="type"><?php echo ucfirst($ticket['ticket_type']);?></td>
-			        <td class="severity"><?php echo ucfirst($ticket['severity']);?></td>
-
-			        <td class="title"><?php echo ucfirst($ticket['title']);?></td>
-			        <td class="user_name"><?php echo ucwords($ticket['user_fn'] . ' ' . $ticket['user_ln']);?> </td>
-			        <td class="created"><?php echo date('d/m/Y', $ticket['created']);?></td>
-				</tr>
-			<?php endforeach;?>
-		<?php else:?>
-			<tr><td colspan="5">No tickets present</td></tr>
-		<?php endif;?>
-	</tbody>
-</table>
-
-<style type="text/css">
-.issues th, .issues td { padding-left: 10px; }
-</script>
+			<tbody>
+				<?php if(count($tickets) > 0): ?>
+					<?php
+					foreach($tickets as $ticket):
+						$urlTitle = str_replace(' ', '-', $ticket['title']);
+					?>
+						<tr>
+						<td class="num"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle ?>" title=""><?php echo $ticket['id']; ?></a></td>
+						<td class="" style="text-align: left;"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle; ?>" title=""><?php echo ucfirst($ticket['title']);?></a></td>
+						<td class="ttstate"><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle; ?>" title=""><?php echo ucfirst($ticket['status']); ?></a></td>
+						<td><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle; ?>" title=""><?php echo ucwords(str_replace('_', ' ', $ticket['ticket_type']));?></a></td>
+						<td><a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle; ?>" title=""><?php echo ucfirst($ticket['severity']);?></a></td>
+						<td>	<a href="<?php echo $baseUrl . 'ticket/view/' . $ticket['id'] . '/' . $urlTitle; ?>" title=""><?php echo ucwords($ticket['user_assigned_fn'] . ' ' . $ticket['user_assigned_ln']);?></a></td>
+						</tr>
+					<?php endforeach;?>
+				<?php else:?>
+					<tr><td colspan="5">No tickets present</td></tr>
+				<?php endif;?>
+			</tbody>
+		</table>
+	</article>
+</div>
