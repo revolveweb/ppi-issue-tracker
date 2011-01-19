@@ -1,24 +1,28 @@
 <?php
 class APP_Controller_Ticket extends APP_Controller_Application {
 
-	function __construct() {
-		parent::__construct();
-		
-	}
-
-	function index() {
+	public function index() {
+		$filter = $this->get('filter', '');
 		$this->loginCheck();
-		$ticket = new APP_Model_Ticket();
+		$ticket  = new APP_Model_Ticket();
 		$tickets = $ticket->select()
-					->columns('t.*, u.first_name user_fn, u.last_name user_ln')
+					->columns('t.*, u.first_name user_assigned_fn, u.last_name user_assigned_ln')
 					->from($ticket->getTableName() . ' t')
 					->leftJoin('users u', 't.user_id=u.id')
-					->order('created desc')
-					->getList();
-		$this->load('ticket/index', array('tickets'=>$tickets));
-	}
+					->order('created desc');
 	
-	function view() {
+		if($filter === 'cat') {
+		    $tickets->leftJoin('ticket_category tc', 'tc.id = t.category_id');
+			$tickets->where('tc.title = ' . $ticket->quote(str_replace('-', ' ', $this->get($filter))));
+		}
+		
+		$sCat = str_replace('-', ' ', $this->get($filter));
+		$tickets = $tickets->getList();
+		$this->addStylesheet('ticket-table.css');
+		$this->load('ticket/index', compact('tickets', 'sCat'));
+	}
+
+	public function view() {
 		$iTicketID = $this->get('view', 0);
 		if($iTicketID < 1) {
 			throw new PPI_Exception('Invalid Ticket ID');
@@ -31,13 +35,13 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$oComment  = new APP_Model_Ticket_Comment();
 		$aComments = $oComment->getComments(array('ticket_id' => $aTicket['id']));
 
-		$this->addStylesheet(array('shThemeDefault.css'));		
+		$this->addStylesheet(array('shThemeDefault.css'));
 		$this->addJavascript(array('highlight.pack.js'));
 
 		$this->load('ticket/view', compact('aTicket', 'aComments'));
 	}
 
-	function create() {
+	public function create() {
 		$this->addEditHandler('create');
 	}
 
@@ -51,9 +55,9 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		if($oForm->isSubmitted() && $oForm->isValidated()) {
 			$aSubmitValues = $oForm->getSubmitValues();
 			$aSubmitValues += array(
-				'status'           => 'open', 
-				'severity'         => 'minor', 
-				'assigned_user_id' => 0, 
+				'status'           => 'open',
+				'severity'         => 'minor',
+				'assigned_user_id' => 0,
 				'user_id'          => $this->getAuthData(false)->id, 
 				'created'          => time()
 			);
@@ -68,7 +72,7 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 
 	}
 
-	function delete() {
+	public function delete() {
 		$this->loginCheck();
 		$iTicketID = $this->_input->get('delete');
 		$oTicket   = new APP_Model_Ticket();
@@ -76,7 +80,7 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$this->redirect('ticket');
 	}
 
-	function cdelete() {
+	public function cdelete() {
 		$this->loginCheck();
 		$iCommentID = $this->_input->get('cdelete');
 		$iTicketID  = $this->_input->get('tid');
@@ -85,7 +89,7 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$this->redirect('ticket');
 	}
 
-	function ccreate() {
+	public function ccreate() {
 		$this->loginCheck();
 		$oComment = new APP_Model_Ticket_Comment();
 		$oComment->insert(array(
@@ -97,10 +101,4 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$this->setFlashMessage('Comment created.');
 		$this->redirect('ticket/view/' . $this->post('ticket_id'));
 	}
-
-
-
-
-
-
 }
