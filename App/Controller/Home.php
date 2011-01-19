@@ -6,7 +6,7 @@ class APP_Controller_Home extends APP_Controller_Application {
 		$oTicketCat = new APP_Model_Ticket_Category();
 		$tickets = $oTicket->getTickets();
 		$cats = $oTicketCat->getList();
-		$this->addStylesheet('ticket-table');
+		$this->addStylesheet('ticket-table.css');
 		$this->load('home/index', compact('tickets', 'cats'));
 	}
 
