@@ -69,7 +69,14 @@ class APP_Model_Ticket extends APP_Model_Application {
 					->from($this->getTableName() . ' t')
 					->leftJoin('users u', 't.user_id=u.id')
 					->leftJoin('users uu', 't.assigned_user_id=uu.id');
-
+    
+        if(isset($p_aParams['filter'], $p_aParams['filter_type'])) {
+            if($p_aParams['filter_type'] === 'cat') {
+                $tickets->leftJoin('ticket_category tc', 'tc.id = t.category_id');
+                $tickets->where('tc.title = ' . $this->quote(str_replace('-', ' ', $p_aParams['filter'])));	                
+            }       
+        }
+    					
 		if(isset($p_aParams['keyword']) && $p_aParams['keyword'] != '') {
 			$sSecureSearchKeyword = $this->quote('%' . $p_aParams['keyword'] . '%');
 			$aOrWhere             = array(

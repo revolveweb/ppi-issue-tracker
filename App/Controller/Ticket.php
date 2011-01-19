@@ -3,21 +3,14 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 
 	public function index() {
 		$filter = $this->get('filter', '');
-		$this->loginCheck();
 		$ticket  = new APP_Model_Ticket();
-		$tickets = $ticket->select()
-					->columns('t.*, u.first_name user_assigned_fn, u.last_name user_assigned_ln')
-					->from($ticket->getTableName() . ' t')
-					->leftJoin('users u', 't.user_id=u.id')
-					->order('created desc');
-	
-		if($filter === 'cat') {
-		    $tickets->leftJoin('ticket_category tc', 'tc.id = t.category_id');
-			$tickets->where('tc.title = ' . $ticket->quote(str_replace('-', ' ', $this->get($filter))));
+		$aTicketParams = array();
+		if($filter === 'cat' && ($cat = $this->get($filter)) !== '') {
+		    $aTicketParams['filter_type'] = 'cat';
+		    $aTicketParams['filter'] = str_replace('-', ' ', $cat);
 		}
-		
+		$tickets = $ticket->getTickets($aTicketParams);
 		$sCat = str_replace('-', ' ', $this->get($filter));
-		$tickets = $tickets->getList();
 		$this->addStylesheet('ticket-table.css');
 		$this->load('ticket/index', compact('tickets', 'sCat'));
 	}
