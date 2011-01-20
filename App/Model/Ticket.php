@@ -8,7 +8,7 @@ class APP_Model_Ticket extends APP_Model_Application {
 		parent::__construct($this->_table, $this->_primary);
 	}
 
-    function getAdminAddEditFormStructure($p_sMode = 'create') {
+    function getAddEditFormStructure($p_sMode = 'create', array $p_aOptions = array()) {
     	$structure = array(
             'fields' => array(
                     'title'            	    => array('type' => 'text', 'label' => 'Title', 'size' => 30),
@@ -16,9 +16,9 @@ class APP_Model_Ticket extends APP_Model_Application {
                     'ticket_type'           => array('type' => 'dropdown', 'label' => 'Type', 'options' => array()),
             	    'severity'              => array('type' => 'dropdown', 'label' => 'Severity', 'options' => array()),
                     'status'                => array('type' => 'dropdown', 'label' => 'Status', 'options' => array()),
-    		    'assigned_user_id'      => array('type' => 'dropdown', 'label' => 'Assign', 'options' => array()),
+    		        'assigned_user_id'      => array('type' => 'dropdown', 'label' => 'Assign', 'options' => array()),
                     'content'               => array('type' => 'textarea', 'label' => 'Description', 'rows' => 10, 'cols' => 40),
-    		    'submit'                => array('type' => 'submit', 'label' => '', 'value' => 'Create Ticket'),
+					'submit'                => array('type' => 'submit', 'label' => '', 'value' => 'Create Ticket'),
     		),
             'rules' => array(
                     'title' => array('type' => 'required', 'message' => 'Title cannot be blank'),
@@ -27,40 +27,21 @@ class APP_Model_Ticket extends APP_Model_Application {
             )
     	);
 
-    	$structure['fields']['ticket_type']['options'] = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');
-    	$structure['fields']['severity']['options']    = array('minor' => 'minor','major' => 'major','critical' => 'critical');
-    	$structure['fields']['status']['options']      = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
-    	$oUser = new APP_Model_User();
-    	$users = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));
-    	$structure['fields']['assigned_user_id']['options'] = $users;
-    	return $structure;
-    }
-
-
-    function getAddEditFormStructure($p_sMode = 'create') {
-    	$structure = array(
-            'fields' => array(
-                    'title'            	    => array('type' => 'text', 'label' => 'Title', 'size' => 70),
-                    'category_id'           => array('type' => 'dropdown', 'label' => 'Category', 'options' => array()),
-                    'ticket_type'           => array('type' => 'dropdown', 'label' => 'Type', 'options' => array()),
-                    'content'               => array('type' => 'textarea', 'label' => 'Description', 'rows' => 20, 'cols' => 80),
-    		    'submit'                => array('type' => 'static', 'label' => '', 'value' => '<div class="" style=""><button type="submit"><span class="button green" id="create-ticket-button">Create ticket</span></button></div>')
-
-    		),
-            'rules' => array(
-                    'title' => array('type' => 'required', 'message' => 'Title cannot be blank'),
-                    'content' => array('type' => 'required', 'message' => 'You must enter a description')
-
-            )
-    	);
-
-        $oTicketCat = new APP_Model_Ticket_Category();
-        $structure['fields']['category_id']['options'] = $this->convertGetListToDropdown($oTicketCat->getList(), 'title');
-    	$structure['fields']['ticket_type']['options'] = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');
-    	$oUser = new APP_Model_User();
-    	$users = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));
-
-    	return $structure;
+		if(isset($p_aOptions['isAdmin']) && $p_aOptions['isAdmin'] === false){
+			unset($structure['fields']['assigned_user_id']);
+			unset($structure['fields']['severity']);
+			unset($structure['fields']['status']);
+		} else {
+			$oTicketCat = new APP_Model_Ticket_Category();
+			$structure['fields']['category_id']['options'] = $this->convertGetListToDropdown($oTicketCat->getList(), 'title');
+			$structure['fields']['ticket_type']['options'] = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');
+			$structure['fields']['severity']['options']    = array('minor' => 'minor','major' => 'major','critical' => 'critical');
+			$structure['fields']['status']['options']      = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
+			$oUser = new APP_Model_User();
+			$users = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));
+			$structure['fields']['assigned_user_id']['options'] = $users;
+		}
+		return $structure;
     }
 
     function getTickets(array $p_aParams = array()) {

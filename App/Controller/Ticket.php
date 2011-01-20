@@ -44,7 +44,9 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$oForm   = new PPI_Model_Form();
 		$oForm->init('ticket_create');
 		$oForm->disableSubmit();
-		$oForm->setFormStructure($oTicket->getAddEditFormStructure($p_sMode));
+		$oForm->setFormStructure($oTicket->getAddEditFormStructure($p_sMode, array(
+			'isAdmin' => $this->getAuthData(false)->role_name !== 'member'
+		)));
 		if($oForm->isSubmitted() && $oForm->isValidated()) {
 			$aSubmitValues = $oForm->getSubmitValues();
 			$aSubmitValues += array(
