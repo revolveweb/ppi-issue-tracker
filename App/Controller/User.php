@@ -44,7 +44,7 @@ class APP_Controller_User extends PPI_Controller_User {
 	function postLoginRedirect() {
 		switch($this->getAuthData(false)->role_name) {
 			case 'member':
-				$this->redirect('ticket');	
+				$this->redirect('home');	
 				break;
 				
 			case 'administrator':
