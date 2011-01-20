@@ -8,16 +8,19 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		if($filter === 'cat' && ($cat = $this->get($filter, '')) !== '') {
 		    $aTicketParams['filter_type'] = 'cat';
 		    $aTicketParams['filter'] = str_replace('-', ' ', $cat);
+		    $sFilter = str_replace('-', ' ', $this->get($filter));
 		}
 		
 		if($filter === 'mine' && $this->isLoggedIn() === true) {
 			$aTicketParams['filter_type'] = 'mine';
 			$aTicketParams['filter'] = $this->getAuthData(false)->id;
+			$sFilter = 'mine';
 		}
 		$tickets = $ticket->getTickets($aTicketParams);
-		$sCat = str_replace('-', ' ', $this->get($filter));
+		
+		
 		$this->addStylesheet('ticket-table.css');
-		$this->load('ticket/index', compact('tickets', 'sCat'));
+		$this->load('ticket/index', compact('tickets', 'sFilter'));
 	}
 
 	public function view() {
