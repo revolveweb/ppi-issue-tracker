@@ -1,5 +1,5 @@
 <div class="wrap" style="margin-top: 20px;">
-    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;&raquo;&nbsp;<span>Filter tickets by: <strong><?php echo $sCat; ?></strong></span>
+    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;&raquo;&nbsp;<span>Filter tickets by: <strong><?php echo $sFilter; ?></strong></span>
 </div>
 
 <div class="wrap" style="margin-top: 20px;">
