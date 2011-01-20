@@ -1,7 +1,12 @@
 <section class="box_1" style="margin-top: 25px; padding: 25px; text-align: left;">
 	<div class="ticket">
 		<div class="ticket-info rel" style="position: relative;">
-			<div class="ticket-num abs" style="position: absolute; top: 5px; right: 5px;"><h1 style="font-size: 18px;">#<?php echo $aTicket['id']; ?></h1></div>
+			<div class="ticket-num abs" style="position: absolute; top: 15px; right: 50px;"><h1 style="font-size: 18px;">#<?php echo $aTicket['id']; ?></h1></div>
+			<?php if($isLoggedIn && $authInfo['role_name'] !== 'member'): ?>
+			<div class="ticket-edit-icon" style="position: absolute; top: 1px; right: 5px;">
+			    <a href="<?php echo $baseUrl; ?>ticket/edit/<?php echo $aTicket['id']; ?>" title="Edit Ticket"><img src="<?php echo $baseUrl; ?>images/ticket_edit.png" alt="Edit Ticket"></a>
+			</div>
+			<?php endif; ?>
 			<h1 style="font-size: 16px; margin-bottom: 12px;"><?php echo $aTicket['title']; ?></h1>
 			<p class="date">Reported by <?php echo $aTicket['user_fn'] . ' ' . $aTicket['user_ln']; ?> | <?php echo date('F dS, Y @ H:i', $aTicket['created']); ?></p>
 			<div style="margin-top: 25px;" class="ticket-content"><?php echo nl2br($aTicket['content']); ?></div>
