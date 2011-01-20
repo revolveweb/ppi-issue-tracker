@@ -37,6 +37,10 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 	public function create() {
 		$this->addEditHandler('create');
 	}
+	
+	public function edit() {
+	    $this->addEditHandler('edit');
+	}
 
 	private function addEditHandler($p_sMode = 'create') {
 		$this->loginCheck();
@@ -47,6 +51,9 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$oForm->setFormStructure($oTicket->getAddEditFormStructure($p_sMode, array(
 			'isAdmin' => $this->getAuthData(false)->role_name !== 'member'
 		)));
+		// Get the ticket ID
+		$iTicketID = $this->get($p_sMode, 0);
+		
 		if($oForm->isSubmitted() && $oForm->isValidated()) {
 			$aSubmitValues = $oForm->getSubmitValues();
 			$aSubmitValues += array(
@@ -56,15 +63,23 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 				'user_id'          => $this->getAuthData(false)->id, 
 				'created'          => time()
 			);
-			$iTicketID = $oTicket->insert($aSubmitValues);
+			
+			if($p_sMode === 'edit' && $iTicketID > 0) {
+			    $oTicket->update($aSubmitValues, $oTicket->getPrimaryKey() . " = " . $oTicket->quote($iTicketID));
+			} else {
+                $iTicketID = $oTicket->insert($aSubmitValues);
+			}
+			
 			$this->setFlashMessage('Ticket successfully created.');
 			$this->redirect('ticket/view/' . $iTicketID . '/' . str_replace(' ', '-', $aSubmitValues['title']));
 		}
 
-		$this->load('ticket/create', array(
-			'formBuilder' => $oForm->getRenderInformation()
-		));
-
+		if($p_sMode === 'edit' && $iTicketID > 0) {
+		    $oForm->setDefaults($oTicket->find($iTicketID));
+		}
+		$formBuilder = $oForm->getRenderInformation();
+		$aTicket = $oTicket->find($iTicketID);
+		$this->load('ticket/create', compact('aTicket', 'formBuilder'));
 	}
 
 	public function delete() {
