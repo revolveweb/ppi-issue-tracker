@@ -61,6 +61,7 @@ margin-bottom: 200px;
 					<li><a href="<?php echo $baseUrl; ?>" title="Home">Home</a></li>
 					<?php if($isLoggedIn): ?>
 					<li><a href="<?php echo $baseUrl; ?>ticket/create" title="Logout">Create ticket</a></li>
+					<li><a href="<?php echo $baseUrl; ?>ticket/index/filter/mine" title="Logout">My Tickets</a></li>
 					<li><a href="<?php echo $baseUrl; ?>user/logout" title="Logout">Logout</a></li>
 					<li style="float: right;"><span>Greetings, <?php echo $authInfo['first_name']; ?></span></li>
 					<?php else: ?>
