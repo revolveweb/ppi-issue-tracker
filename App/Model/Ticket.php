@@ -99,7 +99,7 @@ class APP_Model_Ticket extends APP_Model_Application {
 			$tickets = $tickets->where(implode(' OR ', $aOrWhere));
 		}
 		
-		$tickets = $tickets->where("status NOT IN('closed')")
+		$tickets = $tickets
 			->where('t.id = ' . $this->quote($p_aParams['id']))
 			->order('created desc')
 			->getList()->fetch();
