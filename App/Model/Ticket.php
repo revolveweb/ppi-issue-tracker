@@ -32,14 +32,15 @@ class APP_Model_Ticket extends APP_Model_Application {
 			unset($structure['fields']['severity']);
 			unset($structure['fields']['status']);
 		} else {
-			$structure['fields']['severity']['options']    = array('minor' => 'minor','major' => 'major','critical' => 'critical');
-			$structure['fields']['status']['options']      = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
+			$structure['fields']['severity']['options']         = array('minor' => 'minor','major' => 'major','critical' => 'critical');
+			$structure['fields']['status']['options']           = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
+		    $oUser                                              = new APP_Model_User();			
+    		$structure['fields']['assigned_user_id']['options'] = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));			
 		}
 		$oTicketCat = new APP_Model_Ticket_Category();
-		$oUser      = new APP_Model_User();
 		$structure['fields']['ticket_type']['options']      = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');		
 		$structure['fields']['category_id']['options']      = $this->convertGetListToDropdown($oTicketCat->getList(), 'title');				
-		$structure['fields']['assigned_user_id']['options'] = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));
+
 		return $structure;
     }
 
