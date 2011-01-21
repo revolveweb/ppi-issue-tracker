@@ -5,9 +5,14 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$filter = $this->get('filter', '');
 		$ticket  = new APP_Model_Ticket();
 		$aTicketParams = array();
-		if($filter === 'cat' && ($cat = $this->get($filter)) !== '') {
+		if($filter === 'cat' && ($cat = $this->get($filter, '')) !== '') {
 		    $aTicketParams['filter_type'] = 'cat';
 		    $aTicketParams['filter'] = str_replace('-', ' ', $cat);
+		}
+		
+		if($filter === 'mine' && $this->isLoggedIn() === true) {
+			$aTicketParams['filter_type'] = 'mine';
+			$aTicketParams['filter'] = $this->getAuthData(false)->id;
 		}
 		$tickets = $ticket->getTickets($aTicketParams);
 		$sCat = str_replace('-', ' ', $this->get($filter));

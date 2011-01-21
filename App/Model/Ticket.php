@@ -54,9 +54,12 @@ class APP_Model_Ticket extends APP_Model_Application {
             if($p_aParams['filter_type'] === 'cat') {
                 $tickets->leftJoin('ticket_category tc', 'tc.id = t.category_id');
                 $tickets->where('tc.title = ' . $this->quote(str_replace('-', ' ', $p_aParams['filter'])));	                
-            }       
+            }
+			if($p_aParams['filter_type'] === 'mine') {
+				$tickets->where('t.assigned_user_id = ' . $this->quote($p_aParams['filter']));			
+			}
         }
-    					
+				
 		if(isset($p_aParams['keyword']) && $p_aParams['keyword'] != '') {
 			$sSecureSearchKeyword = $this->quote('%' . $p_aParams['keyword'] . '%');
 			$aOrWhere             = array(
@@ -76,7 +79,7 @@ class APP_Model_Ticket extends APP_Model_Application {
 		return $tickets;
     }
     function getTicket(array $p_aParams = array()) {
-
+		
 		$tickets = $this->select()
 					->columns('t.*, u.first_name user_fn, u.last_name user_ln, uu.first_name user_assigned_fn, uu.last_name user_assigned_ln')
 					->from($this->getTableName() . ' t')
@@ -84,18 +87,17 @@ class APP_Model_Ticket extends APP_Model_Application {
 					->leftJoin('users uu', 't.assigned_user_id=uu.id');
 
 		if(isset($p_aParams['keyword']) && $p_aParams['keyword'] != '') {
-			$sSecureSearchKeyword = $this->quote('%'.$sSearchKeyword.'%');
+			$sSecureSearchKeyword = $this->quote('%'. $p_aParams['keyword'] .'%');
 			$aOrWhere             = array(
 				't.id = '           . $sSecureSearchKeyword,
 				't.title LIKE '     . $sSecureSearchKeyword,
 				'ticket_type LIKE ' . $sSecureSearchKeyword,
 				't.severity LIKE '  . $sSecureSearchKeyword,
-				't.status LIKE '    . $sSecureSearchKeyword,
-				't.status LIKE '    . $sSecureSearchKeyword,
-				't.status LIKE '    . $sSecureSearchKeyword,
+				't.status LIKE '    . $sSecureSearchKeyword
 			);
 			$tickets = $tickets->where(implode(' OR ', $aOrWhere));
 		}
+		
 		$tickets = $tickets->where("status NOT IN('closed')")
 			->where('t.id = ' . $this->quote($p_aParams['id']))
 			->order('created desc')
