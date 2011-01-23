@@ -52,6 +52,7 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 
 	private function addEditHandler($p_sMode = 'create') {
 		$this->loginCheck();
+		$bEdit = $p_sMode === 'edit';
 		$oTicket = new APP_Model_Ticket();
 		$oForm   = new PPI_Model_Form();
 		$oForm->init('ticket_create');
@@ -72,13 +73,13 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 				'created'          => time()
 			);
 			
-			if($p_sMode === 'edit' && $iTicketID > 0) {
+			if($bEdit && $iTicketID > 0) {
 			    $oTicket->update($aSubmitValues, $oTicket->getPrimaryKey() . " = " . $oTicket->quote($iTicketID));
 			} else {
                 $iTicketID = $oTicket->insert($aSubmitValues);
 			}
 			
-			$this->setFlashMessage('Ticket successfully created.');
+			$this->setFlashMessage('Ticket successfully ' . ($bEdit ? 'updated.' : 'created'));
 			$this->redirect('ticket/view/' . $iTicketID . '/' . str_replace(' ', '-', $aSubmitValues['title']));
 		}
 
