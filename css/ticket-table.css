@@ -34,8 +34,9 @@ th {
 }
 
 td, th {
-display: table-cell;
-vertical-align: inherit;
+    text-align: left;
+    display: table-cell;
+    vertical-align: inherit;
 }
 
 
