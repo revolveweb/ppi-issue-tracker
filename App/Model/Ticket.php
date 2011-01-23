@@ -82,8 +82,9 @@ class APP_Model_Ticket extends APP_Model_Application {
     function getTicket(array $p_aParams = array()) {
 		
 		$tickets = $this->select()
-					->columns('t.*, u.first_name user_fn, u.last_name user_ln, uu.first_name user_assigned_fn, uu.last_name user_assigned_ln')
+					->columns('t.*, u.first_name user_fn, u.last_name user_ln, uu.first_name user_assigned_fn, uu.last_name user_assigned_ln, c.title category_name')
 					->from($this->getTableName() . ' t')
+					->leftJoin('ticket_category c', 't.category_id = c.id')
 					->leftJoin('users u', 't.user_id=u.id')
 					->leftJoin('users uu', 't.assigned_user_id=uu.id');
 
