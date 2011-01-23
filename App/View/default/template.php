@@ -66,7 +66,7 @@ margin-bottom: 200px;
 					<li style="float: right;"><span>Greetings, <?php echo $authInfo['first_name']; ?></span></li>
 					<?php else: ?>
 					<li><a href="<?php echo $baseUrl; ?>user/login" title="Login">Login</a></li>
-					<li><a href="<?php echo $baseUrl; ?>user/login" title="Login">Sign up</a></li>
+					<li><a href="<?php echo $baseUrl; ?>user/register" title="Login">Sign up</a></li>
 					<?php endif; ?>
 				
 				</ul>
