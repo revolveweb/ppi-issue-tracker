@@ -8,7 +8,10 @@
 			</div>
 			<?php endif; ?>
 			<h1 style="font-size: 16px; margin-bottom: 12px;"><?php echo $aTicket['title']; ?></h1>
-			<p class="date">Reported by <?php echo $aTicket['user_fn'] . ' ' . $aTicket['user_ln']; ?> | <?php echo date('F dS, Y @ H:i', $aTicket['created']); ?> <?php if($aTicket['user_assigned_fn'] != ''){ echo'| Assigned to:' . $aTicket['user_assigned_fn'] . ' ' . $aTicket['user_assigned_ln'];} ?> </p>
+			<p class="date">Reported by <?php echo $aTicket['user_fn'] . ' ' . $aTicket['user_ln']; ?>&nbsp;|
+                &nbsp;<?php echo date('F dS, Y @ H:i', $aTicket['created']); ?>
+    			<?php echo $aTicket['user_assigned_fn'] != '' ? '| Assigned to:' . $aTicket['user_assigned_fn'] . ' ' . $aTicket['user_assigned_ln'] : ''; ?>
+			</p>
 			<div style="margin-top: 25px;" class="ticket-content"><?php echo nl2br($aTicket['content']); ?></div> 
 		</div>
 		<div class="ticket-replies">
@@ -26,7 +29,8 @@
 			<h1 style="font-size: 16px; margin-bottom: 12px;">Comments and changes to this ticket</h1>
 			<?php foreach($aComments as $comment): ?>
 			<div class="comment" style="margin: 20px; padding-bottom: 20px; border-bottom: 1px solid #E0E0E0;">
-				<p class="date"><?php echo $comment['first_name'] . ' ' . $comment['last_name']; ?> | Created: <?php echo date('F dS, Y @ H:i', $comment['created']); ?></p>
+				<p class="date">
+				    <?php echo $comment['first_name'] . ' ' . $comment['last_name']; ?>&nbsp;|&nbsp;Created: <?php echo date('F dS, Y @ H:i', $comment['created']); ?></p>
 				<div style="margin-top: 25px;" class="ticket-content"><?php echo nl2br($comment['content']); ?></div>
 			</div>
 			<?php endforeach; ?>
