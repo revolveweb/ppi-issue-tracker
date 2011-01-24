@@ -16,6 +16,7 @@ class APP_Model_Ticket extends APP_Model_Application {
                     'ticket_type'           => array('type' => 'dropdown', 'label' => 'Type', 'options' => array()),
             	    'severity'              => array('type' => 'dropdown', 'label' => 'Severity', 'options' => array()),
                     'status'                => array('type' => 'dropdown', 'label' => 'Status', 'options' => array()),
+                    'version'               => array('type' => 'dropdown', 'label' => 'Version', 'options' => array()),
     		        'assigned_user_id'      => array('type' => 'dropdown', 'label' => 'Assign', 'options' => array()),
                     'content'               => array('type' => 'textarea', 'label' => 'Description', 'rows' => 10, 'cols' => 40),
 					'submit'                => array('type' => 'submit', 'label' => '', 'value' => 'Create Ticket'),
@@ -31,10 +32,13 @@ class APP_Model_Ticket extends APP_Model_Application {
 			unset($structure['fields']['assigned_user_id']);
 			unset($structure['fields']['severity']);
 			unset($structure['fields']['status']);
+			unset($structure['fields']['version']);
 		} else {
 			$structure['fields']['severity']['options']         = array('minor' => 'minor','major' => 'major','critical' => 'critical');
 			$structure['fields']['status']['options']           = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
 		    $oUser                                              = new APP_Model_User();			
+		    $oTicket                                            = new APP_Model_Ticket();			
+    		$structure['fields']['version']['options']          = $this->convertGetListToDropdown($oTicket->getVersionsForFormStructure(), 'version');			
     		$structure['fields']['assigned_user_id']['options'] = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));			
 		}
 		$oTicketCat = new APP_Model_Ticket_Category();
@@ -59,6 +63,9 @@ class APP_Model_Ticket extends APP_Model_Application {
 			if($p_aParams['filter_type'] === 'mine') {
 				$tickets->where('t.assigned_user_id = ' . $this->quote($p_aParams['filter']));			
 			}
+			if($p_aParams['filter_type'] === 'version') {
+			    $tickets->where('t.version = ' . $this->quote($p_aParams['filter']));
+			}
         }
 				
 		if(isset($p_aParams['keyword']) && $p_aParams['keyword'] != '') {
@@ -77,6 +84,7 @@ class APP_Model_Ticket extends APP_Model_Application {
 		$tickets = $tickets->where("status NOT IN('closed')")
 			->order('created desc')
 			->getList();
+			
 		return $tickets;
     }
     function getTicket(array $p_aParams = array()) {
@@ -106,4 +114,14 @@ class APP_Model_Ticket extends APP_Model_Application {
 			->getList()->fetch();
 		return $tickets;
     }
+    
+    function getVersionsForFormStructure() {
+        return $this->select()
+            ->columns('id, version')
+            ->from($this->_table)
+            ->order('version')
+            ->group('version')
+            ->getList();
+    }
+    
 }

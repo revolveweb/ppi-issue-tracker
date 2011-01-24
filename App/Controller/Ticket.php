@@ -16,9 +16,13 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 			$aTicketParams['filter'] = $this->getAuthData(false)->id;
 			$sFilter = 'mine';
 		}
-		$tickets = $ticket->getTickets($aTicketParams);
 		
-		
+		if($filter === 'version' && ($version = $this->get($filter)) !== '') {
+		    $aTicketParams['filter_type'] = 'version';
+		    $aTicketParams['filter'] = $version;
+		    $sFilter = 'version ' . $version;
+		}
+	    $tickets = $ticket->getTickets($aTicketParams);
 		$this->addStylesheet('ticket-table.css');
 		$this->load('ticket/index', compact('tickets', 'sFilter'));
 	}
