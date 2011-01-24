@@ -1,5 +1,6 @@
 <div class="wrap" style="margin-top: 20px;">
-    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;&raquo;&nbsp;<span>Filter tickets by: <strong><?php echo $sFilter; ?></strong></span>
+    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;
+    &raquo;&nbsp;<span>Filter tickets by: <strong><?php echo $sFilter; ?></strong></span>
 </div>
 
 <div class="wrap" style="margin-top: 20px;">
@@ -7,13 +8,13 @@
 		<table class="issues" id="ticket_list_table" cellspacing="0" cellpadding="0">
 			<thead>
 			   </tr>
-			    	<th>ID</th>
+			    <th>ID</th>
 				<th>Title</th>
 				<th>Status</th>
 				<th>Type</th>
 				<th>Severity</th>
 				<th>Assigned To</th>
-			    </tr>
+			   </tr>
 			</thead>
 
 			<tbody>

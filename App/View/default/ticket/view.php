@@ -1,3 +1,10 @@
+<div class="wrap" style="margin-top: 20px;">
+    <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;
+    &raquo;&nbsp;<span><a href="<?php echo $baseUrl;?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $aTicket['category_name']);?>"><?php echo $aTicket['category_name'];?></a></span>
+	&raquo;&nbsp;<span><strong><?php echo $aTicket['title']; ?></strong></span>
+</div>
+
+
 <section class="box_1" style="margin-top: 25px; padding: 25px; text-align: left;">
 	<div class="ticket">
 		<div class="ticket-info rel" style="position: relative;">
