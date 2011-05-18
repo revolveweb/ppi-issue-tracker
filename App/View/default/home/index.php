@@ -54,10 +54,10 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php if(count($cats) > 0): ?>
-				 		<?php foreach($cats as $cat):?>
+					<?php if(count($repos) > 0): ?>
+				 		<?php foreach($repos as $repo):?>
 							<tr>
-								<td><a href="<?php echo $baseUrl; ?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $cat['title']); ?>"><?php echo $cat['title']; ?></a></td>
+								<td><a href="<?php echo $baseUrl; ?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $repo); ?>"><?php echo $repo; ?></a></td>
 							</tr>
 						<?php endforeach;?>
 					<?php else:?>

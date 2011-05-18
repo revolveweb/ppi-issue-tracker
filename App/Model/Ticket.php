@@ -36,38 +36,54 @@ class APP_Model_Ticket extends APP_Model_Application {
 		} else {
 			$structure['fields']['severity']['options']         = array('minor' => 'minor','major' => 'major','critical' => 'critical');
 			$structure['fields']['status']['options']           = array('open' => 'open', 'assigned' => 'assigned', 'closed' => 'closed');
-		    $oUser                                              = new APP_Model_User();			
-		    $oTicket                                            = new APP_Model_Ticket();			
-    		$structure['fields']['version']['options']          = $this->convertGetListToDropdown($oTicket->getVersionsForFormStructure(), 'version');			
-    		$structure['fields']['assigned_user_id']['options'] = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));			
+		    $oUser                                              = new APP_Model_User();
+		    $oTicket                                            = new APP_Model_Ticket();
+    		$structure['fields']['version']['options']          = $this->convertGetListToDropdown($oTicket->getVersionsForFormStructure(), 'version');
+    		$structure['fields']['assigned_user_id']['options'] = $this->convertGetListToDropdown($oUser->getList(), array('first_name', ' ', 'last_name'));
 		}
 		$oTicketCat = new APP_Model_Ticket_Category();
-		$structure['fields']['ticket_type']['options']      = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');		
-		$structure['fields']['category_id']['options']      = $this->convertGetListToDropdown($oTicketCat->getList(), 'title');				
+		$structure['fields']['ticket_type']['options']      = array('feature_request' => 'Feature request','bug' => 'Bug', 'enhancement' => 'Enhancement');
+		$structure['fields']['category_id']['options']      = $this->convertGetListToDropdown($oTicketCat->getList(), 'title');
 
 		return $structure;
     }
 
     function getTickets(array $p_aParams = array()) {
+
+		$github = new Github_Client();
+	    $tickets = $github->getIssueApi()->getList('dragoonis', $p_aParams['repo'], 'open');
+
+	    foreach($tickets as $key => $ticket) {
+			$ticket['id'] = $ticket['number'];
+		    $ticket['status'] = $ticket['state'];
+		    $ticket['ticket_type'] = 'bug';
+		    $ticket['severity'] = 'major';
+		    $user = $github->getUserApi()->show($ticket['user']);
+		    $ticket['user_fullname'] = $user['name'];
+		    $ticket['username'] = $user['login'];
+		    $tickets[$key] = $ticket;
+	    }
+	    return $tickets;
+/*
 		$tickets = $this->select()
 					->columns('t.*, u.first_name user_fn, u.last_name user_ln, uu.first_name user_assigned_fn, uu.last_name user_assigned_ln')
 					->from($this->getTableName() . ' t')
 					->leftJoin('users u', 't.user_id=u.id')
 					->leftJoin('users uu', 't.assigned_user_id=uu.id');
-    
+
         if(isset($p_aParams['filter'], $p_aParams['filter_type'])) {
             if($p_aParams['filter_type'] === 'cat') {
                 $tickets->leftJoin('ticket_category tc', 'tc.id = t.category_id');
-                $tickets->where('tc.title = ' . $this->quote(str_replace('-', ' ', $p_aParams['filter'])));	                
+                $tickets->where('tc.title = ' . $this->quote(str_replace('-', ' ', $p_aParams['filter'])));
             }
 			if($p_aParams['filter_type'] === 'mine') {
-				$tickets->where('t.assigned_user_id = ' . $this->quote($p_aParams['filter']));			
+				$tickets->where('t.assigned_user_id = ' . $this->quote($p_aParams['filter']));
 			}
 			if($p_aParams['filter_type'] === 'version') {
 			    $tickets->where('t.version = ' . $this->quote($p_aParams['filter']));
 			}
         }
-				
+
 		if(isset($p_aParams['keyword']) && $p_aParams['keyword'] != '') {
 			$sSecureSearchKeyword = $this->quote('%' . $p_aParams['keyword'] . '%');
 			$aOrWhere             = array(
@@ -84,11 +100,27 @@ class APP_Model_Ticket extends APP_Model_Application {
 		$tickets = $tickets->where("status NOT IN('closed')")
 			->order('created desc')
 			->getList();
-			
-		return $tickets;
+
+		return $tickets'
+ */
     }
     function getTicket(array $p_aParams = array()) {
-		
+		$github = new Github_Client();
+	    $ticket = $github->getIssueApi()->show('dragoonis', 'ppi-framework', $p_aParams['id']);
+//	    ppi_dump($ticket); exit;
+
+		$ticket['id'] = $ticket['number'];
+		$ticket['status'] = $ticket['state'];
+		$ticket['ticket_type'] = 'bug';
+		$ticket['severity'] = 'major';
+	    $ticket['created'] = $ticket['created_at'];
+	    $ticket['content'] = $ticket['body'];
+		$user = $github->getUserApi()->show($ticket['user']);
+		$ticket['user_fullname'] = $user['name'];
+	    $ticket['repo_name'] = 'ppi-framework';
+
+	    return $ticket;
+/*
 		$tickets = $this->select()
 					->columns('t.*, u.first_name user_fn, u.last_name user_ln, uu.first_name user_assigned_fn, uu.last_name user_assigned_ln, c.title category_name')
 					->from($this->getTableName() . ' t')
@@ -107,14 +139,16 @@ class APP_Model_Ticket extends APP_Model_Application {
 			);
 			$tickets = $tickets->where(implode(' OR ', $aOrWhere));
 		}
-		
+
 		$tickets = $tickets
 			->where('t.id = ' . $this->quote($p_aParams['id']))
 			->order('created desc')
 			->getList()->fetch();
 		return $tickets;
+
+ */
     }
-    
+
     function getVersionsForFormStructure() {
         return $this->select()
             ->columns('id, version')
@@ -123,5 +157,5 @@ class APP_Model_Ticket extends APP_Model_Application {
             ->group('version')
             ->getList();
     }
-    
+
 }

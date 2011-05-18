@@ -5,23 +5,30 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		$filter = $this->get('filter', '');
 		$ticket  = new APP_Model_Ticket();
 		$aTicketParams = array();
-		if($filter === 'cat' && ($cat = $this->get($filter, '')) !== '') {
+		
+		// If we're filtering by cat
+		if($filter === 'cat' && ($repo = $this->get($filter, '')) !== '') {
 		    $aTicketParams['filter_type'] = 'cat';
-		    $aTicketParams['filter'] = str_replace('-', ' ', $cat);
+		    $aTicketParams['filter'] = str_replace('-', ' ', $repo);
 		    $sFilter = str_replace('-', ' ', $this->get($filter));
 		}
-		
+
+		// If we're filtering by 'mine'
 		if($filter === 'mine' && $this->isLoggedIn() === true) {
 			$aTicketParams['filter_type'] = 'mine';
 			$aTicketParams['filter'] = $this->getAuthData(false)->id;
 			$sFilter = 'mine';
 		}
-		
+
+		// If we're filtering by version
 		if($filter === 'version' && ($version = $this->get($filter)) !== '') {
 		    $aTicketParams['filter_type'] = 'version';
 		    $aTicketParams['filter'] = $version;
 		    $sFilter = 'version ' . $version;
 		}
+		
+		$aTicketParams['repo'] = $repo;
+
 	    $tickets = $ticket->getTickets($aTicketParams);
 		$this->addStylesheet('ticket-table.css');
 		$this->load('ticket/index', compact('tickets', 'sFilter'));
@@ -49,7 +56,7 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 	public function create() {
 		$this->addEditHandler('create');
 	}
-	
+
 	public function edit() {
 	    $this->addEditHandler('edit');
 	}
@@ -66,23 +73,23 @@ class APP_Controller_Ticket extends APP_Controller_Application {
 		)));
 		// Get the ticket ID
 		$iTicketID = $this->get($p_sMode, 0);
-		
+
 		if($oForm->isSubmitted() && $oForm->isValidated()) {
 			$aSubmitValues = $oForm->getSubmitValues();
 			$aSubmitValues += array(
 				'status'           => 'open',
 				'severity'         => 'minor',
 				'assigned_user_id' => 0,
-				'user_id'          => $this->getAuthData(false)->id, 
+				'user_id'          => $this->getAuthData(false)->id,
 				'created'          => time()
 			);
-			
+
 			if($bEdit && $iTicketID > 0) {
 			    $oTicket->update($aSubmitValues, $oTicket->getPrimaryKey() . " = " . $oTicket->quote($iTicketID));
 			} else {
                 $iTicketID = $oTicket->insert($aSubmitValues);
 			}
-			
+
 			$this->setFlashMessage('Ticket successfully ' . ($bEdit ? 'updated.' : 'created'));
 			$this->redirect('ticket/view/' . $iTicketID . '/' . str_replace(' ', '-', $aSubmitValues['title']));
 		}

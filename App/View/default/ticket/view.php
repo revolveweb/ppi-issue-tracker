@@ -1,6 +1,6 @@
 <div class="wrap" style="margin-top: 20px;">
     <a href="<?php echo $baseUrl; ?>">Home</a>&nbsp;
-    &raquo;&nbsp;<span><a href="<?php echo $baseUrl;?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $aTicket['category_name']);?>"><?php echo $aTicket['category_name'];?></a></span>
+    &raquo;&nbsp;<span><a href="<?php echo $baseUrl;?>ticket/index/filter/cat/<?php echo str_replace(' ', '-', $aTicket['repo_name']);?>"><?php echo $aTicket['repo_name'];?></a></span>
 	&raquo;&nbsp;<span><strong><?php echo $aTicket['title']; ?></strong></span>
 </div>
 
@@ -15,15 +15,15 @@
 			</div>
 			<?php endif; ?>
 			<h1 style="font-size: 16px; margin-bottom: 12px;"><?php echo $aTicket['title']; ?></h1>
-			<p class="date">Reported by <?php echo $aTicket['user_fn'] . ' ' . $aTicket['user_ln']; ?>&nbsp;|
-                &nbsp;<?php echo date('F dS, Y @ H:i', $aTicket['created']); ?>
-    			<?php echo $aTicket['user_assigned_fn'] != '' ? '| Assigned to: ' . $aTicket['user_assigned_fn'] . ' ' . $aTicket['user_assigned_ln'] : ''; ?>
+			<p class="date">Reported by <?php echo $aTicket['user_fullname']; ?>&nbsp;|
+                &nbsp;<?php echo $aTicket['created']; ?>
+    			<?php echo $aTicket['user_fullname'] != '' ? '| Assigned to: ' . $aTicket['user_fullname'] : ''; ?>
 			</p>
-			<div style="margin-top: 25px;" class="ticket-content"><?php echo nl2br($aTicket['content']); ?></div> 
+			<div style="margin-top: 25px;" class="ticket-content"><?php echo nl2br($aTicket['content']); ?></div>
 		</div>
 		<div class="ticket-replies">
 			<div class="ticket-reply">
-				
+
 			</div>
 		</div>
 	</div>
@@ -75,16 +75,16 @@
 		    			return false;
 		    		}
 		    	});
-	    	
-		    	
+
+
 		    });
-	
+
 		</script>
 		<?php else: ?>
 		<p style="margin: 5px; margin-left: 0;">You must be logged in to post comments. Click here to <a href="<?php echo $baseUrl; ?>user/login" title="Sign in">Sign in</a> or <a href="<?php echo $baseUrl; ?>user/register">Register</a></p>
 		<?php endif; ?>
 		<script type="text/javascript">
-		hljs.initHighlightingOnLoad();	
+		hljs.initHighlightingOnLoad();
 		</script>
 	</div>
 </section>
